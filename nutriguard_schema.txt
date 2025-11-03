@@ -1,0 +1,217 @@
+-- ======================================
+-- DATABASE: NutriGuard
+-- ======================================
+
+
+SET search_path TO nutriguard;
+
+-- ======================================
+-- TABLE: staff
+-- ======================================
+CREATE TABLE staff (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(120) UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    role VARCHAR(20) CHECK (role IN ('Admin','Dietitian','Nurse','KitchenStaff')),
+    certification TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_staff_role ON staff(role);
+
+-- ======================================
+-- TABLE: patients
+-- ======================================
+CREATE TABLE patients (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INT,
+    gender VARCHAR(10),
+    medical_conditions TEXT,
+    dietary_restrictions TEXT,
+    admission_date DATE DEFAULT CURRENT_DATE,
+    photo_url TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_patients_name ON patients(name);
+
+-- ======================================
+-- TABLE: ingredients
+-- ======================================
+CREATE TABLE ingredients (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    nutritional_info JSONB,
+    supplier VARCHAR(100),
+    quantity DECIMAL(10,2),
+    unit VARCHAR(20),
+    expiry_date DATE,
+    last_inspection_date DATE,
+    storage_temp DECIMAL(5,2),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_ingredients_name ON ingredients(name);
+CREATE INDEX idx_ingredients_expiry ON ingredients(expiry_date);
+
+-- ======================================
+-- TABLE: recipes
+-- ======================================
+CREATE TABLE recipes (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    image_url TEXT,
+    total_calories DECIMAL(8,2),
+    created_by INT REFERENCES staff(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_recipes_name ON recipes(name);
+
+-- Bridge Table: recipe_ingredients
+CREATE TABLE recipe_ingredients (
+    id SERIAL PRIMARY KEY,
+    recipe_id INT REFERENCES recipes(id) ON DELETE CASCADE,
+    ingredient_id INT REFERENCES ingredients(id) ON DELETE CASCADE,
+    quantity DECIMAL(10,2),
+    unit VARCHAR(20)
+);
+CREATE INDEX idx_recipe_ingredients_recipe ON recipe_ingredients(recipe_id);
+CREATE INDEX idx_recipe_ingredients_ingredient ON recipe_ingredients(ingredient_id);
+
+-- ======================================
+-- TABLE: meal_plans
+-- ======================================
+CREATE TABLE meal_plans (
+    id SERIAL PRIMARY KEY,
+    patient_id INT REFERENCES patients(id) ON DELETE CASCADE,
+    created_by INT REFERENCES staff(id) ON DELETE SET NULL,
+    start_date DATE,
+    end_date DATE,
+    ai_generated BOOLEAN DEFAULT FALSE,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_meal_plans_patient ON meal_plans(patient_id);
+
+-- Bridge Table: meal_plan_recipes
+CREATE TABLE meal_plan_recipes (
+    id SERIAL PRIMARY KEY,
+    meal_plan_id INT REFERENCES meal_plans(id) ON DELETE CASCADE,
+    recipe_id INT REFERENCES recipes(id) ON DELETE CASCADE,
+    meal_type VARCHAR(20) CHECK (meal_type IN ('Breakfast','Lunch','Dinner','Snack')),
+    portion_size VARCHAR(50)
+);
+CREATE INDEX idx_meal_plan_recipes_meal_plan ON meal_plan_recipes(meal_plan_id);
+CREATE INDEX idx_meal_plan_recipes_recipe ON meal_plan_recipes(recipe_id);
+
+-- ======================================
+-- TABLE: nutrition_entries
+-- ======================================
+CREATE TABLE nutrition_entries (
+    id SERIAL PRIMARY KEY,
+    patient_id INT REFERENCES patients(id) ON DELETE CASCADE,
+    recipe_id INT REFERENCES recipes(id) ON DELETE SET NULL,
+    recorded_by INT REFERENCES staff(id) ON DELETE SET NULL,
+    date DATE DEFAULT CURRENT_DATE,
+    intake_percentage DECIMAL(5,2),
+    blood_sugar DECIMAL(5,2),
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+CREATE INDEX idx_nutrition_entries_patient ON nutrition_entries(patient_id);
+
+-- ======================================
+-- TABLE: safety_logs
+-- ======================================
+CREATE TABLE safety_logs (
+    id SERIAL PRIMARY KEY,
+    ingredient_id INT REFERENCES ingredients(id) ON DELETE SET NULL,
+    facility_area VARCHAR(100),
+    temperature DECIMAL(5,2),
+    inspector_id INT REFERENCES staff(id) ON DELETE SET NULL,
+    inspection_date DATE DEFAULT CURRENT_DATE,
+    compliance_status VARCHAR(10) CHECK (compliance_status IN ('Pass','Fail','Warning')),
+    remarks TEXT,
+    document_url TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+CREATE INDEX idx_safety_logs_date ON safety_logs(inspection_date);
+
+-- ======================================
+-- TABLE: alerts
+-- ======================================
+CREATE TABLE alerts (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(50),
+    message TEXT,
+    triggered_by INT REFERENCES staff(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    status VARCHAR(20) CHECK (status IN ('Active','Resolved')) DEFAULT 'Active'
+);
+
+CREATE INDEX idx_alerts_status ON alerts(status);
+
+-- ======================================
+-- TRIGGERS: Auto-update timestamps
+-- ======================================
+CREATE OR REPLACE FUNCTION update_modified_column()
+RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = NOW();
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Attach to tables that have updated_at
+CREATE TRIGGER set_timestamp_staff
+BEFORE UPDATE ON staff
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER set_timestamp_patients
+BEFORE UPDATE ON patients
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER set_timestamp_ingredients
+BEFORE UPDATE ON ingredients
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER set_timestamp_recipes
+BEFORE UPDATE ON recipes
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+CREATE TRIGGER set_timestamp_meal_plans
+BEFORE UPDATE ON meal_plans
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+-- ======================================
+-- TRIGGER: Ingredient Expiry Alert
+-- ======================================
+CREATE OR REPLACE FUNCTION check_ingredient_expiry()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.expiry_date < CURRENT_DATE THEN
+        INSERT INTO alerts (type, message, triggered_by)
+        VALUES ('Safety Violation', CONCAT('Ingredient "', NEW.name, '" is expired!'), NULL);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER ingredient_expiry_alert
+AFTER INSERT OR UPDATE ON ingredients
+FOR EACH ROW EXECUTE FUNCTION check_ingredient_expiry();
+
+-- ======================================
+-- Done ✅
+-- ======================================
