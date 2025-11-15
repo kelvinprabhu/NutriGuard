@@ -7,12 +7,15 @@ class Settings(BaseSettings):
     DB_PASSWORD: str = "1234"
     DB_HOST: str = "localhost"
     DB_PORT: str = "5432"
+
     
     # API Configuration
     API_TITLE: str = "NutriGuard API"
     API_VERSION: str = "1.0.0"
     API_DESCRIPTION: str = "Healthcare Food Management System"
-    
+
+    # Google AI Configuration
+    GOOGLE_AI_API_KEY: str = "AIzaSyCFotRAQfwNXTXUNp239ZxIzpp1nA4qtLc"
     class Config:
         env_file = ".env"
 
