@@ -1,0 +1,847 @@
+{
+    "info": {
+        "name": "NutriGuard API",
+        "description": "Complete API collection for NutriGuard Healthcare Food Management System",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "nutriguard"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000",
+            "type": "string"
+        },
+        {
+            "key": "patient_id",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "recipe_id",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "meal_plan_id",
+            "value": "1",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "System",
+            "item": [
+                {
+                    "name": "Root - API Info",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "System Stats",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/stats",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "stats"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Patient Management",
+            "item": [
+                {
+                    "name": "Register Patient",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"John Doe\",\n  \"age\": 65,\n  \"gender\": \"Male\",\n  \"medical_conditions\": \"Type 2 Diabetes, Hypertension\",\n  \"dietary_restrictions\": \"Low sodium, Diabetic diet, Gluten-free\",\n  \"admission_date\": \"2025-01-15\",\n  \"photo_url\": \"https://example.com/photos/patient1.jpg\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/patients",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "patients"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Patient Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/patients/{{patient_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "patients",
+                                "{{patient_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Dietary Restrictions",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"dietary_restrictions\": \"Low sodium, Diabetic diet, Lactose-free, No red meat\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/patients/{{patient_id}}/dietary-restrictions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "patients",
+                                "{{patient_id}}",
+                                "dietary-restrictions"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Patient Meal Plan",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/patients/{{patient_id}}/meal-plan",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "patients",
+                                "{{patient_id}}",
+                                "meal-plan"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Nutrition History",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/patients/{{patient_id}}/nutrition-history?days=30",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "patients",
+                                "{{patient_id}}",
+                                "nutrition-history"
+                            ],
+                            "query": [
+                                {
+                                    "key": "days",
+                                    "value": "30"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Recipe Management",
+            "item": [
+                {
+                    "name": "Create Recipe",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Grilled Salmon with Quinoa\",\n  \"description\": \"Heart-healthy salmon with protein-rich quinoa and steamed vegetables\",\n  \"image_url\": \"https://example.com/recipes/salmon-quinoa.jpg\",\n  \"total_calories\": 450.5,\n  \"created_by\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/recipes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "recipes"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Search Recipes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/recipes/search?keyword=salmon&max_calories=500",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "recipes",
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "keyword",
+                                    "value": "salmon"
+                                },
+                                {
+                                    "key": "max_calories",
+                                    "value": "500"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Modify Recipe (AI)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"recipe_id\": 1,\n  \"dietary_requirements\": [\n    \"Low sodium\",\n    \"Diabetic-friendly\",\n    \"Heart-healthy\"\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/recipes/{{recipe_id}}/modify",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "recipes",
+                                "{{recipe_id}}",
+                                "modify"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Meal Planning",
+            "item": [
+                {
+                    "name": "Generate Meal Plan (AI)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/generate?patient_id={{patient_id}}&days=7",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "generate"
+                            ],
+                            "query": [
+                                {
+                                    "key": "patient_id",
+                                    "value": "{{patient_id}}"
+                                },
+                                {
+                                    "key": "days",
+                                    "value": "7"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Meal Plan Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/{{meal_plan_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "{{meal_plan_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Generate Meal Cards",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/{{meal_plan_id}}/images",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "{{meal_plan_id}}",
+                                "images"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Recipe to Meal Plan",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/{{meal_plan_id}}/recipes?recipe_id=1&meal_type=Breakfast&portion_size=Standard",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "{{meal_plan_id}}",
+                                "recipes"
+                            ],
+                            "query": [
+                                {
+                                    "key": "recipe_id",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "meal_type",
+                                    "value": "Breakfast"
+                                },
+                                {
+                                    "key": "portion_size",
+                                    "value": "Standard"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Remove Recipe from Meal Plan",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/{{meal_plan_id}}/recipes/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "{{meal_plan_id}}",
+                                "recipes",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Active Meal Plans",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/patient/{{patient_id}}/active",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "patient",
+                                "{{patient_id}}",
+                                "active"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Meal Plan History",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/patient/{{patient_id}}/history?limit=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "patient",
+                                "{{patient_id}}",
+                                "history"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Meal Plan",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/{{meal_plan_id}}?start_date=2025-11-15&end_date=2025-11-22&notes=Updated meal plan",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "{{meal_plan_id}}"
+                            ],
+                            "query": [
+                                {
+                                    "key": "start_date",
+                                    "value": "2025-11-15"
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2025-11-22"
+                                },
+                                {
+                                    "key": "notes",
+                                    "value": "Updated meal plan"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Meal Plan",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/meal-plans/{{meal_plan_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "meal-plans",
+                                "{{meal_plan_id}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Inventory Management",
+            "item": [
+                {
+                    "name": "Log Ingredient",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Fresh Salmon Fillet\",\n  \"nutritional_info\": {\n    \"protein\": \"25g\",\n    \"fat\": \"12g\",\n    \"carbs\": \"0g\",\n    \"omega3\": \"2.5g\"\n  },\n  \"supplier\": \"Ocean Fresh Suppliers\",\n  \"quantity\": 50,\n  \"unit\": \"kg\",\n  \"expiry_date\": \"2025-11-20\",\n  \"last_inspection_date\": \"2025-11-15\",\n  \"storage_temp\": 2.5\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/inventory/ingredients",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "inventory",
+                                "ingredients"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Food Safety",
+            "item": [
+                {
+                    "name": "Record Temperature Log",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"facility_area\": \"Main Refrigerator - Unit A\",\n  \"temperature\": 3.5,\n  \"inspector_id\": 1,\n  \"ingredient_id\": 1,\n  \"remarks\": \"Temperature within safe range\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/safety/temperature-logs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "safety",
+                                "temperature-logs"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Log Safety Inspection",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"ingredient_id\": 1,\n  \"facility_area\": \"Kitchen Prep Area\",\n  \"temperature\": 4.0,\n  \"inspector_id\": 1,\n  \"compliance_status\": \"Pass\",\n  \"remarks\": \"All safety protocols followed. Equipment clean and sanitized.\",\n  \"document_url\": \"https://example.com/inspection-reports/2025-11-15.pdf\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/safety/inspections",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "safety",
+                                "inspections"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Compliance",
+            "item": [
+                {
+                    "name": "Generate Compliance Report",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/compliance/reports?start_date=2025-10-01&end_date=2025-11-15",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "compliance",
+                                "reports"
+                            ],
+                            "query": [
+                                {
+                                    "key": "start_date",
+                                    "value": "2025-10-01"
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2025-11-15"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Nutrition Monitoring",
+            "item": [
+                {
+                    "name": "Log Nutrition Intake",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"patient_id\": 1,\n  \"recipe_id\": 1,\n  \"recorded_by\": 1,\n  \"date\": \"2025-11-15\",\n  \"intake_percentage\": 85.5,\n  \"blood_sugar\": 125.0,\n  \"notes\": \"Patient enjoyed the meal, ate most portions\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/nutrition/intake",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "nutrition",
+                                "intake"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Nutrition Analytics",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/nutrition/analytics/{{patient_id}}?days=30",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "nutrition",
+                                "analytics",
+                                "{{patient_id}}"
+                            ],
+                            "query": [
+                                {
+                                    "key": "days",
+                                    "value": "30"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Analyze Correlation (AI)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/nutrition/analyze-correlation?patient_id={{patient_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "nutrition",
+                                "analyze-correlation"
+                            ],
+                            "query": [
+                                {
+                                    "key": "patient_id",
+                                    "value": "{{patient_id}}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Alerts",
+            "item": [
+                {
+                    "name": "Get Dietary Violations",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/alerts/dietary-violations?status=Active",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "alerts",
+                                "dietary-violations"
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "Active"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Alerts",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/alerts/dietary-violations",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "alerts",
+                                "dietary-violations"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "AI Recommendations",
+            "item": [
+                {
+                    "name": "Recommend Meals (AI)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"patient_id\": 1,\n  \"preferences\": {\n    \"avoid_foods\": [\"shellfish\", \"nuts\"],\n    \"preferred_cuisine\": \"Mediterranean\"\n  }\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/ai/recommend-meals",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ai",
+                                "recommend-meals"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Assess Food Safety Risks (AI)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"ingredient_ids\": [1, 2, 3],\n  \"facility_areas\": [\"Main Kitchen\", \"Storage Room A\"]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/ai/assess-risks",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ai",
+                                "assess-risks"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Predict Health Outcomes (AI)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"patient_id\": 1,\n  \"meal_plan_id\": 1,\n  \"time_horizon_days\": 30\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/ai/predict-outcomes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ai",
+                                "predict-outcomes"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Optimize Recipe (AI)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"recipe_id\": 1,\n  \"health_goals\": [\n    \"Reduce sodium\",\n    \"Increase fiber\",\n    \"Lower glycemic index\"\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/ai/optimize-recipe",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ai",
+                                "optimize-recipe"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
